@@ -88,12 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const <Widget>[
                     Text(
-                      "User",
+                      " User  ID ",
                       style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
                     ),
                     Center(
                       child: Text(
-                        "Lat",
+                        " Lat",
                         style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold ),
                       ),
                     ),
