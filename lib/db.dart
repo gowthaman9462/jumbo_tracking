@@ -22,7 +22,7 @@ class DbManager {
 
   Future<List<Model>> getModelList() async {
     await openDb();
-    final List<Map<String, dynamic>> maps = await _database.rawQuery("SELECT name, lat, lon, time FROM Test ORDER BY ID DESC");
+    final List<Map<String, dynamic>> maps = await _database.rawQuery("SELECT name, lat, lon, time FROM Test where id in (select max(id) from Test GROUP BY name) order by id DESC");
 
     return List.generate(maps.length, (i) {
       return Model(
@@ -33,4 +33,17 @@ class DbManager {
       );
     });
   }
+  Future<List<Model>> getAllModelList() async {
+    await openDb();
+    final List<Map<String, dynamic>> maps = await _database.rawQuery("SELECT name, lat, lon, time FROM Test order by id DESC");
+    return List.generate(maps.length, (i) {
+      return Model(
+        name: maps[i]['name'],
+        lat: maps[i]['lat'],
+        lon: maps[i]['lon'],
+        time: maps[i]['time']
+      );
+    });
+  }
+  
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'model.dart';
 import 'db.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Project V1',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.yellow
       ),
       home: const MyHomePage(title: 'Project'),
     );
@@ -39,10 +40,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final DbManager dbManager = DbManager();
   late Model model;
-  late Future<List<Model>> list;
-  
+  late List<Model> modelList;
+  late Future<List<Model>> list = dbManager.getModelList();
   void initState(){
     getIncomingMessage();
+    setmarker();
     super.initState();
   }
 
@@ -65,21 +67,97 @@ class _MyHomePageState extends State<MyHomePage> {
         print("\n\n\n"),
         setState(() {
           list = dbManager.getModelList();
-        })
+        }),
       },
+      setmarker()
     });
   }
 
+  getCurrentMessage(){
+    setState(() {
+      list = dbManager.getModelList();
+    });
+  }
+  getAllMessage(){
+    setState(() {
+      list = dbManager.getAllModelList();
+    });
+  }
+  final Completer<GoogleMapController> _controller = Completer();
+  static const LatLng _center = LatLng(11.496057859832861, 77.27676158022257);
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
+  late Set<Marker> _markers1 = {};
+  setmarker() async{
+    List<Model> list = await dbManager.getModelList();
+    for(int i = 0; i< list.length; i++)
+    {
+      print("         ");
+      print(list[i].name);
+      print("          ");
+      _markers1.add(
+        Marker(
+          markerId: MarkerId(list[i].name), 
+          position: LatLng(double.parse(list[i].lat),double.parse(list[i].lon)),
+          icon: BitmapDescriptor.defaultMarker,
+        )
+      );
+    }
+    getCurrentMessage();
+  }
+  
+
+
   @override
   Widget build(BuildContext context) {
+    print("\n\n\n\n");
+    print(_markers1);
+    print("\n\n\n\n");
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text(widget.title)),
-      ),
       body:Column(
         children: <Widget>[
+          Container(
+            width: 400,
+            height: 400,
+            child:GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: const CameraPosition(
+                target: _center,
+                zoom: 8.0,
+              ),
+              markers: _markers1
+            )
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:<Widget>[
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  onPressed: (){ 
+                    getCurrentMessage();
+                  },
+                  child: const Text('Current',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  onPressed: (){ 
+                    getAllMessage();
+                  },
+                  child: const Text('All',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: Card(
               color: Colors.white,
               child: Padding(
@@ -112,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          Expanded(child: UserList(list: dbManager.getModelList()))
+          Expanded(child: UserList(list: list))
         ]
       )
     );
@@ -147,7 +225,7 @@ class _UserList extends State<UserList> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    color: const Color.fromARGB(255, 189, 232, 252),
+                    color: const Color.fromARGB(255, 248, 255, 151),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
