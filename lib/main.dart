@@ -1,19 +1,20 @@
-import 'dart:async';
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'model.dart';
 import 'db.dart';
+import 'map.dart';
+import 'user.dart';
 
 void main() => runApp(MyApp());
-var user_list = ['6382185320', '9942999966','6379090933','8270680417'];
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,26 +51,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   getIncomingMessage() async{
     SmsReceiver receiver = SmsReceiver();
+    List check;
+    var name;
     receiver.onSmsReceived.listen((SmsMessage msg) async => {
-      if (user_list.contains(msg.body.split(",")[0])){
+      name = msg.address.replaceAll("+91", ""),
+      check = await dbManager.checkUser(User(name: name)),
+      if (check[0]["count(id)"] == 1 && msg.body.split(",")[0].trim() == "globus"){
         model = Model(
-          name: msg.body.split(",")[0], 
+          name: msg.address.replaceAll("+91", ""),
           lat:msg.body.split(",")[1] , 
           lon:msg.body.split(",")[2], 
           time:DateFormat('yyyy-MM-dd\nHH:mm').format(msg.date)
         ),
-        dbManager.insertModel(
-          model
-        ),
+        dbManager.insertModel(model),
         print(msg.address),
         print(msg.body.split(",")),
         print(msg.date),
-        print("\n\n\n"),
         setState(() {
           list = dbManager.getModelList();
         }),
-      },
-      setmarker()
+        setmarker()
+      }
     });
   }
 
@@ -83,53 +85,56 @@ class _MyHomePageState extends State<MyHomePage> {
       list = dbManager.getAllModelList();
     });
   }
-  final Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = LatLng(11.496057859832861, 77.27676158022257);
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
 
   late Set<Marker> _markers1 = {};
+  
   setmarker() async{
     List<Model> list = await dbManager.getModelList();
+    Set<Marker> marker_list = {};
     for(int i = 0; i< list.length; i++)
     {
       print("         ");
       print(list[i].name);
       print("          ");
-      _markers1.add(
+      marker_list.add(
         Marker(
           markerId: MarkerId(list[i].name), 
           position: LatLng(double.parse(list[i].lat),double.parse(list[i].lon)),
+          infoWindow: InfoWindow(
+            title: list[i].name
+          ),
           icon: BitmapDescriptor.defaultMarker,
         )
       );
+      setState(() {
+        _markers1 = marker_list;
+      });
     }
-    getCurrentMessage();
   }
   
 
 
   @override
   Widget build(BuildContext context) {
-    print("\n\n\n\n");
-    print(_markers1);
-    print("\n\n\n\n");
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Globus'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return const UserPage(title: 'Users');
+                },
+              ));
+            },
+          ),
+        ],
+      ),
       body:Column(
         children: <Widget>[
-          Container(
-            width: 400,
-            height: 400,
-            child:GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: const CameraPosition(
-                target: _center,
-                zoom: 8.0,
-              ),
-              markers: _markers1
-            )
-          ),
+          MapPage(list: _markers1),
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: Row(

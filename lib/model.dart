@@ -11,3 +11,11 @@ class Model {
     return{"name":name,"lat":lat,"lon":lon,"time":time};
   }
 }
+
+class User{
+  String name;
+  User({required this.name});
+  Map<String, dynamic> toJson(){
+    return{"name":name};
+  }
+}
