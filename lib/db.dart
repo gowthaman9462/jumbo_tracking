@@ -51,6 +51,14 @@ class DbManager {
     });
   }
 
+  Future<List<List>> getList(startDate, stopDate) async {
+    await openDb();
+    final List<Map<String, dynamic>> maps = await _database.rawQuery("SELECT name, lat, lon, time FROM Trans WHERE time between date('"+startDate+"') and date('"+stopDate+"');");
+    return List.generate(maps.length, (i) {
+      return[maps[i]['name'],maps[i]['lat'],maps[i]['lon'],maps[i]['time']]; 
+    });
+  }
+
   Future insertUser(User user) async {
     await openDb();
     return await _database.insert('User', user.toJson());

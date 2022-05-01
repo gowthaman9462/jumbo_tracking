@@ -11,6 +11,7 @@ import 'model.dart';
 import 'db.dart';
 import 'map.dart';
 import 'user.dart';
+import 'download.dart';
 
 void main() => runApp(MyApp());
 
@@ -56,6 +57,9 @@ class _MyHomePageState extends State<MyHomePage> {
     receiver.onSmsReceived.listen((SmsMessage msg) async => {
       name = msg.address.replaceAll("+91", ""),
       check = await dbManager.checkUser(User(name: name)),
+      print(name),
+      print(check[0]["count(id)"]),
+      print(msg.body.split(",")[0].trim()),
       if (check[0]["count(id)"] == 1 && msg.body.split(",")[0].trim() == "globus"){
         model = Model(
           name: msg.address.replaceAll("+91", ""),
@@ -126,6 +130,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
                   return const UserPage(title: 'Users');
+                },
+              ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return const DownloadPage(title: "Download",);
                 },
               ));
             },

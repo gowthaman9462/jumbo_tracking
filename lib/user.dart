@@ -25,10 +25,13 @@ class _UserState extends State<UserPage> {
 
   insertUser(name) async{
     var nameText = name.text;
-    dbManager.insertUser(User(name: nameText));
-    setState(() {
-      userList = dbManager.getUserList();
-    });
+    var check = await dbManager.checkUser(User(name: nameText));
+    if(nameText != "" && (check[0]["count(id)"] != 1)){
+      dbManager.insertUser(User(name: nameText));
+      setState(() {
+        userList = dbManager.getUserList();
+      });
+    }
   }
 
 
