@@ -3,7 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
-import 'db.dart';
+import 'db.dart'; 
 
 class DownloadPage extends StatefulWidget {
   const DownloadPage({Key? key, required this.title}) : super(key: key);
@@ -130,7 +130,7 @@ class _DownloadState extends State<DownloadPage> {
     print(transList.length);
     transList.insert(0, ["Name","Latitude","Longitude","Updated at"]);
     String csv = const ListToCsvConverter().convert(transList);
-    createFolder("globus", csv);
+    createFolder("Jumbo_Tracking", csv);
   }
 
   createFolder(String folderName, String csv) async {
@@ -143,9 +143,16 @@ class _DownloadState extends State<DownloadPage> {
     }
     if (status.isGranted) {
       Directory('/storage/emulated/0/$folderName').create(recursive: true);
-      final file = await File('/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}.csv').create();
+      var pathCount = "";
+      var count = 0;
+      var filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
+      while(File(filePath).existsSync()) {
+        count += 1;
+        pathCount = "($count)";
+        filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
+      }
+      final file = await File(filePath).create();
       file.writeAsString(csv);
-      Navigator.pop(context);
     }
   }
   

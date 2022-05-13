@@ -23,17 +23,23 @@ class _MapState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 400,
-      height: 400,
-      child:GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: const CameraPosition(
-          target: _center,
-          zoom: 8.0,
-        ),
-        markers: widget.list
-      )
+    print(widget.list);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Map"),
+      ),
+      body: Container(
+        width: 400,
+        height: 800,
+        child:GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: const CameraPosition(
+            target: _center,
+            zoom: 8.0,
+          ),
+          markers: widget.list
+        )
+      ),
     );
   }
 }

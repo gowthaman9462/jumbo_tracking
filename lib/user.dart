@@ -46,7 +46,6 @@ class _UserState extends State<UserPage> {
             icon: const Icon(Icons.person_add),
             onPressed: () {
               showModalBottomSheet<void>(
-                
                 context: context,
                 builder: (BuildContext context) {
                   return Padding(
@@ -70,25 +69,27 @@ class _UserState extends State<UserPage> {
                                 ),
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                  child: const Text('Close', style:TextStyle(color: Colors.red),),
-                                  onPressed: () => {
-                                    Navigator.pop(context),
-                                    _newUser.text = "",
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Add',style:TextStyle(color: Colors.black),),
-                                  onPressed: () => {
-                                    insertUser(_newUser),
-                                    _newUser.text = "",
-                                    Navigator.pop(context)
-                                  },
-                                )
-                              ],
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    child: const Text('Close', style:TextStyle(color: Colors.red),),
+                                    onPressed: () => {
+                                      Navigator.pop(context),
+                                      _newUser.text = "",
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Add',style:TextStyle(color: Colors.black),),
+                                    onPressed: () => {
+                                      insertUser(_newUser),
+                                      _newUser.text = "",
+                                      Navigator.pop(context)
+                                    },
+                                  )
+                                ],
+                              ),
                             )
                           ],
                         ),

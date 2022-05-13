@@ -1,10 +1,10 @@
 
 import 'dart:async';
+import 'package:Globus/home.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'model.dart';
@@ -20,11 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Project V1',
+      title: 'Jumbo Tracking',
       theme: ThemeData(
         primarySwatch: Colors.yellow
       ),
-      home: const MyHomePage(title: 'Project'),
+      home: const MyHomePage(title:'Jumbo Tracking'),
     );
   }
 }
@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
+
 }
 
 
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print(name),
       print(check[0]["count(id)"]),
       print(msg.body.split(",")[0].trim()),
-      if (check[0]["count(id)"] == 1 && msg.body.split(",")[0].trim() == "globus"){
+      if (check[0]["count(id)"] == 1 && msg.body.split(",")[0].trim().toLowerCase() == "jt"){
         model = Model(
           name: msg.address.replaceAll("+91", ""),
           lat:msg.body.split(",")[1] , 
@@ -69,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         dbManager.insertModel(model),
         print(msg.address),
+        print(msg.body.split(",")[0].trim().toLowerCase()),
         print(msg.body.split(",")),
         print(msg.date),
         setState(() {
@@ -76,17 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }),
         setmarker()
       }
-    });
-  }
-
-  getCurrentMessage(){
-    setState(() {
-      list = dbManager.getModelList();
-    });
-  }
-  getAllMessage(){
-    setState(() {
-      list = dbManager.getAllModelList();
     });
   }
 
@@ -115,103 +106,58 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
+
+  int _selectedIndex = 0;
+  late final List<Widget> _widgetOptions = <Widget>[
+    HomePage(title: "Home", list: list),
+    MapPage(list: _markers1),
+    const UserPage(title: "Users"),
+    const DownloadPage(title: "Report")
+
+  ];
+
+  void _onItemTapped(int index) {
+    setmarker();
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
   
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Globus'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return const UserPage(title: 'Users');
-                },
-              ));
-            },
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.yellow,
           ),
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return const DownloadPage(title: "Download",);
-                },
-              ));
-            },
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+            backgroundColor: Colors.yellow,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'User',
+            backgroundColor: Colors.yellow,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notes),
+            label: 'Report',
+            backgroundColor: Colors.yellow,
           ),
         ],
+        backgroundColor: Colors.yellow,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Color.fromARGB(255, 58, 58, 58),
+        onTap: _onItemTapped,
       ),
-      body:Column(
-        children: <Widget>[
-          MapPage(list: _markers1),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:<Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  onPressed: (){ 
-                    getCurrentMessage();
-                  },
-                  child: const Text('Current',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  onPressed: (){ 
-                    getAllMessage();
-                  },
-                  child: const Text('All',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Card(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const <Widget>[
-                    Text(
-                      " User  ID ",
-                      style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
-                    ),
-                    Center(
-                      child: Text(
-                        " Lat",
-                        style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        "Lon",
-                        style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text(
-                      "Updated at",
-                      style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(child: UserList(list: list))
-        ]
-      )
     );
   }
 }
