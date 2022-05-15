@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         print(msg.date),
         setState(() {
           list = dbManager.getModelList();
+          _selectedIndex = _selectedIndex;
         }),
         setmarker()
       }
@@ -108,16 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   int _selectedIndex = 0;
-  late final List<Widget> _widgetOptions = <Widget>[
-    HomePage(title: "Home", list: list),
-    MapPage(list: _markers1),
-    const UserPage(title: "Users"),
-    const DownloadPage(title: "Report")
-
-  ];
-
+  
   void _onItemTapped(int index) {
-    setmarker();
+    
     setState(() {
       _selectedIndex = index;
     });
@@ -127,8 +121,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var widget_;
+    if(_selectedIndex == 0){
+      widget_ = HomePage(title: "Home", list: list);
+    }
+    else if(_selectedIndex == 1){
+      widget_ = MapPage(list: _markers1);
+    }
+    else if(_selectedIndex == 2){
+      widget_ = const UserPage(title: "Users");
+    }
+    else{
+      widget_ = const DownloadPage(title: "Report");
+    }
     return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: widget_,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -161,74 +168,5 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-class UserList extends StatefulWidget {
-  const UserList({Key? key, required this.list}) : super(key: key);
-  final Future<List<Model>> list;
-  @override
-  _UserList createState() => _UserList();
-}
-
-class _UserList extends State<UserList> {
-  final DbManager dbManager = DbManager();
-
-  late Model model;
-  late List<Model> modelList;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: widget.list,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            modelList = snapshot.data as List<Model>;
-            return ListView.builder(
-              itemCount: modelList.length,
-              itemBuilder: (context, index) {
-                Model _model = modelList[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    color: const Color.fromARGB(255, 248, 255, 151),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            _model.name,
-                            style: const TextStyle(fontSize: 15, color: Colors.black,fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            _model.lat,
-                            style: const TextStyle(fontSize: 15, color: Colors.black),
-                          ),
-                          Text(
-                            _model.lon,
-                            style: const TextStyle(fontSize: 15, color: Colors.black),
-                          ),
-                          Text(
-                            _model.time,
-                            style: const TextStyle(fontSize: 15, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-
 
 // flutter run --no-sound-null-safety

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'db.dart';
 import 'model.dart';
-import 'main.dart';
+import 'userlist.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title, required this.list}) : super(key: key);
@@ -14,16 +14,23 @@ class HomePage extends StatefulWidget {
 
 class _HomeState extends State<HomePage> {
   DbManager dbManager = DbManager();
-  getCurrentMessage(){
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
     setState(() {
-      widget.list = dbManager.getModelList();
+      _selectedIndex = index;
     });
+    if(index==0){
+      setState(() {
+        widget.list = dbManager.getModelList();
+      });
+    }
+    else{
+      setState(() {
+        widget.list = dbManager.getAllModelList();
+      });
+    }
   }
-  getAllMessage(){
-    setState(() {
-      widget.list = dbManager.getAllModelList();
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +41,7 @@ class _HomeState extends State<HomePage> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
             child: Card(
               color: Colors.white,
               child: Padding(
@@ -68,33 +75,34 @@ class _HomeState extends State<HomePage> {
             ),
           ),
           Expanded(child: UserList(list: widget.list)),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:<Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  onPressed: (){ 
-                    getCurrentMessage();
-                  },
-                  child: const Text('Current',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  onPressed: (){ 
-                    getAllMessage();
-                  },
-                  child: const Text('All',style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold)),
-                )
-              ],
+        ]
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            label: "Current",
+            backgroundColor: Colors.yellow, 
+            icon: Container(
+              height: 0.0,
             ),
           ),
-        ]
+          BottomNavigationBarItem(
+            icon: Container(
+              height: 0.0,
+            ),
+            label: "History",
+            backgroundColor: Colors.yellow,
+          ),
+        ],
+        backgroundColor: Color.fromARGB(255, 216, 216, 216),
+        selectedIconTheme: IconThemeData(opacity: 0.0, size: 0),
+        unselectedIconTheme: IconThemeData(opacity: 0.0, size: 0),
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Color.fromARGB(255, 74, 74, 74),
+        selectedLabelStyle: const TextStyle(decoration: TextDecoration.underline, fontSize: 20, fontWeight: FontWeight.bold),
+        unselectedLabelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        onTap: _onItemTapped,
       ),
     );
   }

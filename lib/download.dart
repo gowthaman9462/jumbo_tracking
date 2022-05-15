@@ -110,53 +110,6 @@ class _DownloadState extends State<DownloadPage> {
     return convertedDateTime;
   }
 
-  exportCSV(value_,startDate,stopDate) async{
-    if(value_ == "day"){
-      startDate = DateTime.now().subtract(const Duration(days:1));
-      stopDate = DateTime.now();
-    }
-    else if(value_ == "week") {
-      startDate = DateTime.now().subtract(const Duration(days:7));
-      stopDate = DateTime.now();
-    }
-    else if(value_ == "month") {
-      startDate = DateTime.now().subtract(const Duration(days:30));
-      stopDate = DateTime.now();
-    }
-    stopDate = stopDate.add(const Duration(days:1));
-    print(timeString(startDate));
-    print(timeString(stopDate));
-    transList = await dbManager.getList(timeString(startDate), timeString(stopDate));
-    print(transList.length);
-    transList.insert(0, ["Name","Latitude","Longitude","Updated at"]);
-    String csv = const ListToCsvConverter().convert(transList);
-    createFolder("Jumbo_Tracking", csv);
-  }
-
-  createFolder(String folderName, String csv) async {
-    var status = await Permission.manageExternalStorage.status;
-    if (status.isDenied) {
-      await Permission.manageExternalStorage.request();
-    }
-    if (await Permission.storage.isRestricted) {
-      await Permission.manageExternalStorage.request();
-    }
-    if (status.isGranted) {
-      Directory('/storage/emulated/0/$folderName').create(recursive: true);
-      var pathCount = "";
-      var count = 0;
-      var filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
-      while(File(filePath).existsSync()) {
-        count += 1;
-        pathCount = "($count)";
-        filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
-      }
-      final file = await File(filePath).create();
-      file.writeAsString(csv);
-    }
-  }
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,10 +173,14 @@ class _DownloadState extends State<DownloadPage> {
           date(),
           ElevatedButton(
             onPressed: () {
-              exportCSV(value_, startDate, stopDate);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DownloadView(value_: value_,startDate: startDate,stopDate: stopDate,))
+              );
+              // exportCSV(value_, startDate, stopDate);
             },
             child: const Text(
-              'Download',
+              'View',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -234,3 +191,192 @@ class _DownloadState extends State<DownloadPage> {
   }
 }
 
+
+class DownloadView extends StatefulWidget {
+  DownloadView({Key? key,required this.value_, required this.startDate, required this.stopDate}) : super(key: key);
+  late String value_;
+  late DateTime startDate;
+  late DateTime stopDate;
+  List<List> reportList = [];
+  @override
+  _DownloadViewState createState() => _DownloadViewState();
+}
+
+class _DownloadViewState extends State<DownloadView> {
+  DbManager dbManager = DbManager();
+  timeString(now,[type_ = false]){
+    String convertedDateTime;
+    if (type_){
+      convertedDateTime = "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')}_${now.hour.toString().padLeft(2,'0')}.${now.minute.toString().padLeft(2,'0')}";
+    }
+    else{
+      convertedDateTime = "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')} ${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}";
+    }
+    return convertedDateTime;
+  }
+
+  exportList(value_,startDate,stopDate) async{
+    List<List> transList = [];
+    if(value_ == "day"){
+      startDate = DateTime.now().subtract(const Duration(days:1));
+      stopDate = DateTime.now();
+    }
+    else if(value_ == "week") {
+      startDate = DateTime.now().subtract(const Duration(days:7));
+      stopDate = DateTime.now();
+    }
+    else if(value_ == "month") {
+      startDate = DateTime.now().subtract(const Duration(days:30));
+      stopDate = DateTime.now();
+    }
+    stopDate = stopDate.add(const Duration(days:1));
+    transList = await dbManager.getList(timeString(startDate), timeString(stopDate));
+    setState((){
+      widget.reportList = transList;  
+    });
+  }
+
+  exportCSV() async{
+    print(widget.reportList.length);
+    widget.reportList.insert(0, ["Name","Latitude","Longitude","Updated at"]);
+    String csv = const ListToCsvConverter().convert(widget.reportList);
+    createFolder("Jumbo_Tracking", csv);
+  }
+
+  createFolder(String folderName, String csv) async {
+    var status = await Permission.manageExternalStorage.status;
+    if (status.isDenied) {
+      await Permission.manageExternalStorage.request();
+    }
+    if (await Permission.storage.isRestricted) {
+      await Permission.manageExternalStorage.request();
+    }
+    if (status.isGranted) {
+      Directory('/storage/emulated/0/$folderName').create(recursive: true);
+      var pathCount = "";
+      var count = 0;
+      var filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
+      while(File(filePath).existsSync()) {
+        count += 1;
+        pathCount = "($count)";
+        filePath = '/storage/emulated/0/$folderName/${timeString(DateTime.now(),true)}$pathCount.csv';
+      }
+      final file = await File(filePath).create();
+      file.writeAsString(csv);
+      Navigator.pop(context);
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    exportList(widget.value_, widget.startDate, widget.stopDate);
+    late Widget widget_;
+    if(widget.reportList.length > 0){
+      widget_ = Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+            child: Card(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const <Widget>[
+                    Text(
+                      " User  ID ",
+                      style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
+                    ),
+                    Center(
+                      child: Text(
+                        " Lat",
+                        style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        "Lon",
+                        style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Text(
+                      "Updated at",
+                      style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.reportList.length,
+              itemBuilder:(context, index) {
+                return ListTile(
+                  title: Card(
+                    color: const Color.fromARGB(255, 248, 255, 151),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            widget.reportList[index][0],
+                            style: const TextStyle(fontSize: 15, color: Colors.black,fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            widget.reportList[index][1],
+                            style: const TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                          Text(
+                            widget.reportList[index][2],
+                            style: const TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                          Text(
+                            widget.reportList[index][3],
+                            style: const TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                );
+              }
+            ),
+          ),
+        ]
+      );
+    }
+    else{
+      widget_ = const Padding(
+        padding: EdgeInsets.all(26.0),
+        child: SizedBox(
+          height: 800,
+          width: 400,
+          child: Text(
+            "No data found",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            textAlign: TextAlign.center,
+
+          ),
+        ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Report"
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () {
+              exportCSV();
+            }
+          )
+        ],
+      ),
+      body: widget_
+    );
+  }
+}
