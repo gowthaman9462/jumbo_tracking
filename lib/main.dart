@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Jumbo Tracking',
       theme: ThemeData(
-        primarySwatch: Colors.yellow
+        primarySwatch: Colors.green
       ),
       home: const MyHomePage(title:'Jumbo Tracking'),
     );
@@ -141,25 +141,25 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: 'Map',
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'User',
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notes),
             label: 'Report',
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.green,
           ),
         ],
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.green,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
         unselectedItemColor: Color.fromARGB(255, 58, 58, 58),

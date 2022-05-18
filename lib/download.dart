@@ -130,6 +130,12 @@ class _DownloadState extends State<DownloadPage> {
                 print(value_);
               },
             ),
+            onTap: (){
+              setState(() {
+                value_ = "day";
+              });
+              print(value_);
+            },
           ),
           ListTile(
             title: const Text('Last Week'),
@@ -143,6 +149,12 @@ class _DownloadState extends State<DownloadPage> {
                 print(value_);
               },
             ),
+            onTap: (){
+              setState(() {
+                value_ = "week";
+              });
+              print(value_);
+            },
           ),
           ListTile(
             title: const Text('Last Month'),
@@ -156,6 +168,12 @@ class _DownloadState extends State<DownloadPage> {
                 print(value_);
               },
             ),
+            onTap: (){
+              setState(() {
+                value_ = "month";
+              });
+              print(value_);
+            },
           ),
           ListTile(
             title: const Text('Date'),
@@ -169,6 +187,12 @@ class _DownloadState extends State<DownloadPage> {
                 print(value_);
               },
             ),
+            onTap: (){
+              setState(() {
+                value_ = "date";
+              });
+              print(value_);
+            },
           ),
           date(),
           ElevatedButton(
@@ -275,7 +299,7 @@ class _DownloadViewState extends State<DownloadView> {
       widget_ = Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
             child: Card(
               color: Colors.white,
               child: Padding(
@@ -314,7 +338,7 @@ class _DownloadViewState extends State<DownloadView> {
               itemBuilder:(context, index) {
                 return ListTile(
                   title: Card(
-                    color: const Color.fromARGB(255, 248, 255, 151),
+                    color: const Color.fromARGB(255, 174, 255, 177),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -325,11 +349,11 @@ class _DownloadViewState extends State<DownloadView> {
                             style: const TextStyle(fontSize: 15, color: Colors.black,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            widget.reportList[index][1],
+                            double. parse(widget.reportList[index][1]).toStringAsFixed(2),
                             style: const TextStyle(fontSize: 15, color: Colors.black),
                           ),
                           Text(
-                            widget.reportList[index][2],
+                            double. parse(widget.reportList[index][2]).toStringAsFixed(2),
                             style: const TextStyle(fontSize: 15, color: Colors.black),
                           ),
                           Text(
@@ -365,7 +389,7 @@ class _DownloadViewState extends State<DownloadView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Report"
+          "Report",
         ),
         actions: [
           IconButton(

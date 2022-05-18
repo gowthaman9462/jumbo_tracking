@@ -81,7 +81,7 @@ class _HomeState extends State<HomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             label: "Current",
-            backgroundColor: Colors.yellow, 
+            backgroundColor: Colors.green, 
             icon: Container(
               height: 0.0,
             ),
@@ -91,7 +91,7 @@ class _HomeState extends State<HomePage> {
               height: 0.0,
             ),
             label: "History",
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.green,
           ),
         ],
         backgroundColor: Color.fromARGB(255, 216, 216, 216),

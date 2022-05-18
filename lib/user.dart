@@ -101,6 +101,7 @@ class _UserState extends State<UserPage> {
             },
           ),
         ],
+        
       ),
       body: Center(
         child: Scaffold(
@@ -116,7 +117,7 @@ class _UserState extends State<UserPage> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
-                        color: const Color.fromARGB(255, 248, 255, 151),
+                        color: const Color.fromARGB(255, 174, 255, 177),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(

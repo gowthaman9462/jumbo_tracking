@@ -30,7 +30,7 @@ class _UserList extends State<UserList> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    color: const Color.fromARGB(255, 248, 255, 151),
+                    color: const Color.fromARGB(255, 174, 255, 177),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -41,11 +41,11 @@ class _UserList extends State<UserList> {
                             style: const TextStyle(fontSize: 15, color: Colors.black,fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            _model.lat,
+                            double.parse(_model.lat).toStringAsFixed(2),
                             style: const TextStyle(fontSize: 15, color: Colors.black),
                           ),
                           Text(
-                            _model.lon,
+                            double.parse(_model.lon).toStringAsFixed(2),
                             style: const TextStyle(fontSize: 15, color: Colors.black),
                           ),
                           Text(
