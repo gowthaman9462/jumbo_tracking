@@ -41,6 +41,7 @@ class _UserState extends State<UserPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
+        foregroundColor: Colors.black,
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person_add),

@@ -37,6 +37,7 @@ class _HomeState extends State<HomePage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
+        foregroundColor: Colors.black,
       ),
       body: Column(
         children: <Widget>[

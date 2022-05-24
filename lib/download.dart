@@ -114,7 +114,8 @@ class _DownloadState extends State<DownloadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title)
+        title: Text(widget.title),
+        foregroundColor: Colors.black,
       ),
       body: Column(
         children: <Widget>[
@@ -399,6 +400,7 @@ class _DownloadViewState extends State<DownloadView> {
             }
           )
         ],
+        foregroundColor: Colors.black,
       ),
       body: widget_
     );

@@ -27,6 +27,7 @@ class _MapState extends State<MapPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Map"),
+        foregroundColor: Colors.black,
       ),
       body: Container(
         width: 400,

@@ -1,12 +1,14 @@
 
 import 'dart:async';
-import 'package:Globus/home.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+
+import 'home.dart';
 import 'model.dart';
 import 'db.dart';
 import 'map.dart';
@@ -46,6 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   late List<Model> modelList;
   late Future<List<Model>> list = dbManager.getModelList();
   void initState(){
+
+    final AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('logo');
+    
     getIncomingMessage();
     setmarker();
     super.initState();
@@ -121,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var widget_;
+    StatefulWidget widget_;
     if(_selectedIndex == 0){
       widget_ = HomePage(title: "Home", list: list);
     }
