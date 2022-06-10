@@ -43,17 +43,28 @@ class MyHomePage extends StatefulWidget {
 
 
 class _MyHomePageState extends State<MyHomePage> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   final DbManager dbManager = DbManager();
   late Model model;
   late List<Model> modelList;
   late Future<List<Model>> list = dbManager.getModelList();
   void initState(){
-
-    final AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('logo');
-    
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var android = const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = const IOSInitializationSettings();
+    var initSetttings = InitializationSettings(android: android, iOS: iOS);
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: selectNotification);
     getIncomingMessage();
     setmarker();
     super.initState();
+  }
+
+  void selectNotification(String? payload){
+    main();
+    setState(() {
+      _selectedIndex = 1;
+    });
   }
 
   getIncomingMessage() async{
@@ -82,9 +93,24 @@ class _MyHomePageState extends State<MyHomePage> {
           list = dbManager.getModelList();
           _selectedIndex = _selectedIndex;
         }),
-        setmarker()
+        setmarker(),
+        showNotification(model.name)
       }
     });
+  }
+
+  showNotification(String number) async {
+    var android = const AndroidNotificationDetails(
+        'channel id', 'channel NAME', 
+        channelDescription:'CHANNEL DESCRIPTION',
+        priority: Priority.high,
+        importance: Importance.max
+    );
+    var iOS = const  IOSNotificationDetails();
+    var platform = NotificationDetails(android: android, iOS: iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Jumbo Tracking', 'New Update from $number', platform,
+        payload: 'Nitish Kumar Singh is part time Youtuber');
   }
 
   late Set<Marker> _markers1 = {};

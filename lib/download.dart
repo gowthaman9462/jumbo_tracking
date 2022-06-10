@@ -127,6 +127,8 @@ class _DownloadState extends State<DownloadPage> {
               onChanged: (value) {
                 setState(() {
                   value_ = value!;
+                  start = "Start Date";
+                  stop = "End Date";
                 });
                 print(value_);
               },
@@ -134,6 +136,8 @@ class _DownloadState extends State<DownloadPage> {
             onTap: (){
               setState(() {
                 value_ = "day";
+                start = "Start Date";
+                stop = "End Date";
               });
               print(value_);
             },
@@ -146,6 +150,8 @@ class _DownloadState extends State<DownloadPage> {
               onChanged: (value) {
                 setState(() {
                   value_ = value!;
+                  start = "Start Date";
+                  stop = "End Date";
                 });
                 print(value_);
               },
@@ -153,6 +159,8 @@ class _DownloadState extends State<DownloadPage> {
             onTap: (){
               setState(() {
                 value_ = "week";
+                start = "Start Date";
+                stop = "End Date";
               });
               print(value_);
             },
@@ -165,6 +173,8 @@ class _DownloadState extends State<DownloadPage> {
               onChanged: (value) {
                 setState(() {
                   value_ = value!;
+                  start = "Start Date";
+                  stop = "End Date";
                 });
                 print(value_);
               },
@@ -172,6 +182,8 @@ class _DownloadState extends State<DownloadPage> {
             onTap: (){
               setState(() {
                 value_ = "month";
+                start = "Start Date";
+                stop = "End Date";
               });
               print(value_);
             },
@@ -184,6 +196,8 @@ class _DownloadState extends State<DownloadPage> {
               onChanged: (value) {
                 setState(() {
                   value_ = value!;
+                  start = "Start Date";
+                  stop = "End Date";
                 });
                 print(value_);
               },
@@ -191,6 +205,8 @@ class _DownloadState extends State<DownloadPage> {
             onTap: (){
               setState(() {
                 value_ = "date";
+                start = "Start Date";
+                stop = "End Date";
               });
               print(value_);
             },
@@ -202,6 +218,10 @@ class _DownloadState extends State<DownloadPage> {
                 context,
                 MaterialPageRoute(builder: (context) => DownloadView(value_: value_,startDate: startDate,stopDate: stopDate,))
               );
+              setState(() {
+                start = "Start Date";
+                stop = "End Date";
+              });
               // exportCSV(value_, startDate, stopDate);
             },
             child: const Text(
