@@ -29,11 +29,11 @@ onBackgroundMessage(SmsMessage msg) async {
   name = msg.address!.replaceAll("+91", "");
   check = await dbManager.checkUser(User(name: name));
   if (check[0]["count(id)"] == 1 &&
-      msg.body!.split(",")[0].trim().toLowerCase() == "jt") {
+      msg.body!.split(",")[0].trim().toLowerCase() == "detection") {
     model = Model(
       name: msg.address!.replaceAll("+91", ""),
-      lat: msg.body!.split(",")[1],
-      lon: msg.body!.split(",")[2],
+      lat: msg.body!.split(",")[2],
+      lon: msg.body!.split(",")[3],
       time: DateFormat('yyyy-MM-dd\nHH:mm').format(DateTime.now()),
     );
     dbManager.insertModel(model);
@@ -117,11 +117,11 @@ class _MyHomePageState extends State<MyHomePage> {
     name = msg.address!.replaceAll("+91", "");
     check = await dbManager.checkUser(User(name: name));
     if (check[0]["count(id)"] == 1 &&
-        msg.body!.split(",")[0].trim().toLowerCase() == "jt") {
+        msg.body!.split(",")[0].trim().toLowerCase() == "detection") {
       model = Model(
         name: msg.address!.replaceAll("+91", ""),
-        lat: msg.body!.split(",")[1],
-        lon: msg.body!.split(",")[2],
+        lat: msg.body!.split(",")[2],
+        lon: msg.body!.split(",")[3],
         time: DateFormat('yyyy-MM-dd\nHH:mm').format(DateTime.now()),
       );
       dbManager.insertModel(model);
