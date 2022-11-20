@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1009882542515",
+    "project_id": "jumbo-tracking-2022",
+    "storage_bucket": "jumbo-tracking-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009882542515:android:719f9fdcea8b9e9705dbc6",
+        "android_client_info": {
+          "package_name": "com.example.jt2022"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009882542515-0o1c57n6pj24smga7b6f0581357h24j5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZzoDSQzix9QeTQcq9RuWVUec72AOUn9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009882542515-0o1c57n6pj24smga7b6f0581357h24j5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
