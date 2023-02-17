@@ -1,7 +1,7 @@
 # Jumbo Tracking 
 ### Tracking Mobile Application 
 - Tracking using SMS.
-- Developed using Flutter
+- Developed using Flutter and SQLite.
 
 ### Demo
 <div style='display:flex;justified-content:between; width:100vw;'>
